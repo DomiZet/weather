@@ -1,26 +1,23 @@
 import React from 'react';
 import ReacDOM from "react-dom";
+import WeatherDisplay from "./WeatherDisplay";
+import Spinner from './Spinner';
 
 
 class App extends React.Component {
 
-  constructor(props) {
-    
-    super(props);
-    this.state = { lat: null, errorMessage: '' };
-
-    window.navigator.geolocation.getCurrentPosition(
-      position => {
-        this.setState({ lat: position.coords.latitude });
-      },
-      
-      err => {
-        this.setState ({errorMessage: err.message});
-      }
-    );
-
-  }
+  state = { lat: null, errorMessage: '' };
   
+
+  componentDidMount () {
+    window.navigator.geolocation.getCurrentPosition(
+      position => this.setState({ lat: position.coords.latitude }),
+      err => this.setState ({errorMessage: err.message})
+    );
+  }
+
+
+
   render () {
     
     if (this.state.errorMessage && !this.state.lat) {
@@ -28,10 +25,10 @@ class App extends React.Component {
     }
 
     if (!this.state.errorMessage && this.state.lat) {
-      return <div>Latitude: {this.state.lat}</div>;
+      return <WeatherDisplay lat={this.state.lat} />;
     }
 
-    return<div>Loading!</div>;
+    return <Spinner message="Please accept loacation request" />;
 
   }
 
